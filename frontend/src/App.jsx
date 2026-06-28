@@ -68,13 +68,10 @@ export default function App() {
     setAdminTxLoading(true);
     try {
       const contract = await getWriteContract();
-
-      // ✅ FIX: Correctly parse the admin input fields
       const rateInWei = ethers.parseEther(inputCourtRate); 
 
       console.log(`Registering ${inputCourtName} on-chain at ${inputCourtRate} ETH...`);
       
-      // ✅ FIX: Correctly call the addCourt function
       const txResponse = await contract.addCourt(inputCourtName, rateInWei);
       await txResponse.wait();
 
@@ -102,8 +99,6 @@ export default function App() {
     setTxLoading(true);
     try {
       const contract = await getWriteContract();
-      
-      // ✅ Dynamic Fix: Automatically matches the exact dynamic price the court was initialized with
       const paymentInWei = ethers.parseEther(courtPrice); 
 
       console.log(`Minting Pass for Court ID ${courtId} paying ${courtPrice} ETH...`);

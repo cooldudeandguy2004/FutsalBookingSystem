@@ -38,7 +38,6 @@ contract FutsalBookingNFT is ERC721, Ownable, ReentrancyGuard {
         emit CourtAdded(courtCounter, _name, _pricePerHour);
     }
 
-    // Completely removed the timestamp input argument!
     function bookCourt(uint256 _courtId) external payable nonReentrant {
         Court memory court = courts[_courtId];
         require(court.isActive, "Error: Selected court is unavailable.");
