@@ -47,10 +47,10 @@ describe("FutsalBookingNFT Contract Automation Suite", function () {
     it("Should allow a renter to book a slot and successfully mint an NFT pass", async function () {
       // Happy path transaction check
       await expect(
-        futsalBooking.connect(renter1).bookCourt(1, targetTimestamp, { value: oneEtherInWei })
+        futsalBooking.connect(renter1).bookCourt(1, { value: oneEtherInWei })
       )
         .to.emit(futsalBooking, "BookingConfirmed")
-        .withArgs(1, 1, targetTimestamp, renter1.address);
+        .withArgs(1, 1, renter1.address);
 
       // Verify token ownership properties (Requirement B1)
       expect(await futsalBooking.balanceOf(renter1.address)).to.equal(1);
@@ -60,18 +60,18 @@ describe("FutsalBookingNFT Contract Automation Suite", function () {
     it("Should strictly revert if the sent payment value does not match court rate", async function () {
       const wrongPayment = ethers.parseEther("0.5");
       await expect(
-        futsalBooking.connect(renter1).bookCourt(1, targetTimestamp, { value: wrongPayment })
-      ).to.be.revertedWith("Error: Transferred payment does not match hourly rate.");
+        futsalBooking.connect(renter1).bookCourt(1, { value: wrongPayment })
+      ).to.be.revertedWith("Error: Incorrect payment sent.");
     });
 
     it("Should prevent double-booking collisions for the exact same timeline slot", async function () {
       // First booking execution (Success)
-      await futsalBooking.connect(renter1).bookCourt(1, targetTimestamp, { value: oneEtherInWei });
+      await futsalBooking.connect(renter1).bookCourt(1, { value: oneEtherInWei });
 
-      // Second booking attempt on the same slot by a different account (Must safely fail)
+      // Second booking attempt on the same court by a different account (Must safely fail)
       await expect(
-        futsalBooking.connect(renter2).bookCourt(1, targetTimestamp, { value: oneEtherInWei })
-      ).to.be.revertedWith("Error: This time slot is already reserved.");
+        futsalBooking.connect(renter2).bookCourt(1, { value: oneEtherInWei })
+      ).to.be.revertedWith("Error: This court is already reserved.");
     });
   });
-});
+});
