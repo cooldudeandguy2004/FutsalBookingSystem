@@ -206,11 +206,10 @@ Use this checklist to verify the system end-to-end:
 
 ## 👥 Group Members
 
-> *Muhammad Ammar Muqriz bin Mohd Rizal*
-> *Wafiy*
-> *Omar Naim*
-> *Adam Imtiyaz*
+- Muhammad Ammar Muqriz bin Mohd Rizal
+- Wafiy
+- Omar Naim
+- Adam Imtiyaz
 
 ---
 
-*Built as part of a blockchain development assignment.*
