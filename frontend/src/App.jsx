@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connectWallet, getReadOnlyContract, getWriteContract } from "./utils/web3Service";
 import { ethers } from "ethers";
 
@@ -7,9 +7,9 @@ function StatusBanner({ banner, onClose }) {
   if (!banner) return null;
 
   const styles = {
-    success: { border: "#28a745", bg: "rgba(40,167,69,0.12)",  icon: "✅", label: "Success" },
-    error:   { border: "#dc3545", bg: "rgba(220,53,69,0.12)",  icon: "❌", label: "Error"   },
-    warning: { border: "#ffc107", bg: "rgba(255,193,7,0.12)",  icon: "⚠️", label: "Warning" },
+    success: { border: "#28a745", bg: "rgba(40,167,69,0.12)", icon: "✅", label: "Success" },
+    error: { border: "#dc3545", bg: "rgba(220,53,69,0.12)", icon: "❌", label: "Error" },
+    warning: { border: "#ffc107", bg: "rgba(255,193,7,0.12)", icon: "⚠️", label: "Warning" },
     pending: { border: "#3b82f6", bg: "rgba(59,130,246,0.12)", icon: "⏳", label: "Pending" },
   };
 
@@ -88,7 +88,6 @@ export default function App() {
 
   const closeBanner = useCallback(() => setBanner(null), []);
 
-  // Auto-dismiss after 6s; keep pending banners until replaced
   useEffect(() => {
     if (!banner || banner.type === "pending") return;
     const timer = setTimeout(() => setBanner(null), 6000);
@@ -100,6 +99,25 @@ export default function App() {
       fetchLiveBlockchainInventory();
     }
   }, [account]);
+
+  useEffect(() => {
+    if (window.ethereum) {
+      const handleAccounts = (accounts) => {
+        if (accounts.length > 0) {
+          setAccount(accounts[0]);
+        } else {
+          setAccount("");
+          setRenterName("");
+        }
+      };
+      window.ethereum.on("accountsChanged", handleAccounts);
+      return () => {
+        if (window.ethereum.removeListener) {
+          window.ethereum.removeListener("accountsChanged", handleAccounts);
+        }
+      };
+    }
+  }, []);
 
   const handleWalletConnection = async () => {
     try {
@@ -255,6 +273,25 @@ export default function App() {
         ) : (
           <div style={{ backgroundColor: "#1e1e1e", padding: "12px", borderRadius: "8px", border: "1px solid #28a745", display: "inline-block", marginBottom: "20px" }}>
             <span style={{ color: "#28a745", fontWeight: "bold" }}> Connected Wallet:</span> <code>{account}</code>
+            <button
+              onClick={() => {
+                setAccount("");
+                setRenterName("");
+              }}
+              style={{
+                marginLeft: "15px",
+                padding: "6px 12px",
+                backgroundColor: "#dc3545",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                fontSize: "12px",
+                fontWeight: "bold",
+                cursor: "pointer"
+              }}
+            >
+              Disconnect Wallet
+            </button>
           </div>
         )}
 
@@ -300,7 +337,6 @@ export default function App() {
                     <label style={{ display: "block", marginBottom: "6px", color: "#bbb", fontWeight: "bold" }}>Enter Renter Full Name:</label>
                     <input
                       type="text"
-                      placeholder="e.g., Ammar"
                       value={renterName}
                       onChange={(e) => setRenterName(e.target.value)}
                       style={{ width: "95%", padding: "10px", backgroundColor: "#2d2d2d", color: "#fff", border: "1px solid #444", borderRadius: "6px", fontSize: "16px" }}

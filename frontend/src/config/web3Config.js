@@ -1,5 +1,5 @@
 // 1. Paste your new address here:
-export const CONTRACT_ADDRESS = "0xB46Da448184cf0A2F9d4AD385d5E9f5b1914D69F";
+export const CONTRACT_ADDRESS = "0x5E7cadFaE21Cb75F249C91506452ED260aB42dFD";
 
 // 2. Paste the simplified contract functions (ABI) here:
 export const CONTRACT_ABI = [
